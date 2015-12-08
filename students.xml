@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<students>
+    <student id="0001">
+        <fio>Ivan Shulga</fio>
+        <group>gr1</group>
+    </student>
+    <student id="0002">
+        <fio>Sergei Gusev</fio>
+        <group>gr1</group>
+    </student>
+    <student id="0003">
+        <fio>Viktor Schedrikov</fio>
+        <group>gr2</group>
+    </student>
+</students>
