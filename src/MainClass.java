@@ -12,8 +12,8 @@ public class MainClass {
         ReadXMLFileDOMStudent parser = new ReadXMLFileDOMStudent();
         ArrayList student = parser.parsing("students.xml");
         //лист групп(пока не создал)
-        ReadXMLFileDOMStudent parser1 = new ReadXMLFileDOMStudent();
-        ArrayList group = parser1.parsing("group.xml");
+        ReadXMLFileDOMGroup parser1 = new ReadXMLFileDOMGroup();
+        ArrayList group = parser1.parsing("groups.xml");
         //создаем контроллер и передаем туда коллекции
         Controller controller = new Controller(student,group);
         controller.start();

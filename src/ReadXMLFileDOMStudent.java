@@ -16,10 +16,9 @@ public class ReadXMLFileDOMStudent{
 
     public ArrayList parsing(String filename){
 
-        ArrayList<Student> list = new ArrayList<Student>();
-
+        ArrayList <Student> list = new ArrayList <Student> ();
+        int id;
         try {
-
             // Строим объектную модель исходного XML файла
             final File xmlFile = new File(System.getProperty("user.dir") + File.separator + filename);
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -29,26 +28,22 @@ public class ReadXMLFileDOMStudent{
             // Выполнять нормализацию не обязательно, но рекомендуется
             doc.getDocumentElement().normalize();
 
-            // Получаем все узлы с именем "student"
+            // Получаем все узлы с именем "staff"
             NodeList nodeList = doc.getElementsByTagName("student");
 
-            //Проводим перебор всех студентов
             for (int i = 0; i < nodeList.getLength(); i++) {
+                // Выводим информацию по каждому из найденных элементов
                 Node node = nodeList.item(i);
-                // Записываем информацию о каждом студенете в ArrayList
+
                 if (Node.ELEMENT_NODE == node.getNodeType()) {
                     Element element = (Element) node;
-                    /*
-                    System.out.println("ID Cстудента: " + element.getAttribute("id"));
-                    System.out.println("ФИО: " + element.getElementsByTagName("fio").item(0).getTextContent());
-                    System.out.println("Группа: " + element.getElementsByTagName("group").item(0).getTextContent());
-                    */
-                    list.add(new Student(element.getAttribute("id"),
+
+                    id=Integer.parseInt(element.getAttribute("id"));
+                    list.add(new Student(id,
                             element.getElementsByTagName("fio").item(0).getTextContent(),
                             element.getElementsByTagName("group").item(0).getTextContent()));
                 }
-            }
-
+}
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             Logger.getLogger(ReadXMLFileDOMStudent.class.getName()).log(Level.SEVERE, null, ex);
         }

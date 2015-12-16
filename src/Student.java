@@ -4,13 +4,18 @@
 public class Student {
     private String FIO;
     private String group;
-    private String id;
+    private int id;
 
     Student(){
 
     }
-    Student(String id, String fn, String gr){
+    Student(int id, String fn, String gr){
         this.id=id;
+        this.FIO = fn;
+        this.group = gr;
+    }
+
+    Student( String fn, String gr){
         this.FIO = fn;
         this.group = gr;
     }
@@ -32,10 +37,10 @@ public class Student {
     public String getGroup() {
         return group;
     }
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
-    public String getId() {
+    public int getId() {
         return id;
     }
 
