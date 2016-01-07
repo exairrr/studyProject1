@@ -1,9 +1,10 @@
-/**
+package View; /**
  * Created by User on 07.12.2015.
  */
+
+import Model.*;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Scanner;
 
 public class View {
 
@@ -24,8 +25,7 @@ public class View {
     }
 
     public void showStudents(Collection c){
-        for (Iterator <Student > i = c.iterator(); i.hasNext();) {
-            //В классе Student для корректного вывода был переопределен метод toString
+        for (Iterator <Student> i = c.iterator(); i.hasNext();) {
             System.out.println(i.next());
         }
     }
@@ -58,7 +58,6 @@ public class View {
 
     public void showGroups(Collection c){
         for (Iterator <Group > i = c.iterator(); i.hasNext();) {
-            //В классе Student для корректного вывода был переопределен метод toString
             System.out.println(i.next());
         }
     }

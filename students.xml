@@ -1,1 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><students><student id="1"><fio>Ivan Shulga</fio><group>gr1</group></student><student id="2"><fio>Sergei</fio><group>gr2</group></student></students>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<STUDENTS>
+    <STUDENT ID="1">
+        <STUDENT_NAME>Ivan</STUDENT_NAME>
+        <GROUP>gr1</GROUP>
+    </STUDENT>
+</STUDENTS>

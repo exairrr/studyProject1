@@ -1,22 +1,35 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Scanner;
+package Controller;
+
+import Model.*;
+import Parsing.JAXBParser;
+import View.*;
+
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Created by User on 07.12.2015.
  */
-public class Controller {
+public class Controller{
+    JAXBParser<StudentContainer> StudParser = new JAXBParser();
+    JAXBParser<GroupContainer> GroupParser = new JAXBParser();
+    List<Student> StudentList;
+    List<Group> GroupList;
+    StudentContainer listOfStudents;
+    GroupContainer listOfGroups;
 
-    private ArrayList <Student> student;
-    private ArrayList <Group> group;
+    public void reading() throws Exception{
 
-    Controller(ArrayList student, ArrayList group) {
-        this.student = student;
-        this.group = group;
+        listOfStudents = StudParser.getObject(new File("students.xml"), StudentContainer.class);
+        listOfGroups = GroupParser.getObject(new File("groups.xml"), GroupContainer.class);
+        StudentList = listOfStudents.getStudents();
+        GroupList = listOfGroups.getGroups();
+
     }
 
-    public void start() {
+    public void start() throws Exception{
+
         View view = new View();
         view.mainView();
         Scanner in = new Scanner(System.in);
@@ -25,26 +38,30 @@ public class Controller {
             view.showError();
             start();
         }
-        menu(i,view);
+        menu(i, view);
+
     }
 
-    public void menu(int i,View view) {
+    public void menu(int i, View view) throws Exception{
 
         switch (i) {
+
             case 1: {
                 //Показать студентов
-                view.showStudents(student);
+                view.showStudents(StudentList);
                 start();
                 break;
             }
-            case 2: { //Добавить студента
+
+            case 2: {
+                //Добавить студента
                 view.addStudent();
                 Scanner in = new Scanner(System.in);
                 String name = in.nextLine();
                 String group1 = in.nextLine();
                 int signal = 0;
                 Student s = new Student(name, group1);
-                Iterator<Group> iterator = group.iterator();
+                Iterator<Group> iterator = GroupList.iterator();
                 while (iterator.hasNext()) {
                     String gr = iterator.next().getName();
                     if (s.getGroup().equals(gr)) {
@@ -52,9 +69,9 @@ public class Controller {
                     }
                 }
                 if (signal > 0) {
-                    int id = student.get(student.size() - 1).getId() + 1;
+                    int id = StudentList.get(StudentList.size() - 1).getId() + 1;
                     s.setId(id);
-                    addStudent(id, s.getFIO(), s.getGroup());
+                    listOfStudents.add(new Student(id, s.getFIO(), s.getGroup()));
                     view.complAddStudent(name);
                 } else {
                     view.errAddStudent();
@@ -62,6 +79,7 @@ public class Controller {
                 start();
                 break;
             }
+
             case 3: {
                 //Удалить студента
                 view.deleteStudent();
@@ -69,16 +87,16 @@ public class Controller {
                 String name = in.nextLine();
 
                 int signal = 0;
-                Iterator<Student> iterator = student.iterator();
+                Iterator<Student> iterator = StudentList.iterator();
 
                 while (iterator.hasNext()) {
                     String s = iterator.next().getFIO();
                     if (s.equals(name)) {
-                        iterator.remove();
                         signal++;
                     }
                 }
                 if (signal > 0) {
+                    listOfStudents.delete(name);
                     view.complDeleteStudent(name);
                 } else {
                     view.errDeleteStudent();
@@ -89,7 +107,7 @@ public class Controller {
 
             case 4: {
                 //Показать группы
-                view.showGroups(group);
+                view.showGroups(GroupList);
                 start();
                 break;
             }
@@ -98,8 +116,8 @@ public class Controller {
                 view.addGroup();
                 Scanner in = new Scanner(System.in);
                 String name = in.nextLine();
-                int id = group.get(group.size() - 1).getId() + 1;
-                addGroup(id, name);
+                int id = GroupList.get(GroupList.size() - 1).getId() + 1;
+                listOfGroups.add(new Group(id, name));
                 view.complAddGroup(name);
                 start();
                 break;
@@ -111,7 +129,7 @@ public class Controller {
                 String name = in.nextLine();
 
                 int signal = 0;
-                Iterator<Student> iterator = student.iterator();
+                Iterator<Student> iterator = StudentList.iterator();
 
                 while (iterator.hasNext()) {
                     String s = iterator.next().getGroup();
@@ -122,23 +140,24 @@ public class Controller {
                 if (signal > 0) {
                     view.errDeleteGroup();
                 } else {
-                    iterator.remove();
+                    listOfGroups.delete(name);
                     view.complDeleteGroup(name);
                 }
+
                 start();
                 break;
             }
             case 7: {
-                MaskFinder maskFinder= new MaskFinder();
+                MaskFinder maskFinder = new MaskFinder();
                 view.mask();
                 Scanner in = new Scanner(System.in);
                 String s = in.nextLine();
 
-                Iterator <Student> iterator = student.iterator();
+                Iterator<Student> iterator = StudentList.iterator();
                 while (iterator.hasNext()) {
                     String fio = iterator.next().getFIO();
-                    if ( maskFinder.find(maskFinder.convert(s), fio)) {
-                       view.showMask(fio);
+                    if (maskFinder.find(maskFinder.convert(s), fio)) {
+                        view.showMask(fio);
                     }
                 }
                 start();
@@ -151,23 +170,15 @@ public class Controller {
                 Scanner in = new Scanner(System.in);
                 String otv = in.nextLine();
                 if (otv.equals("y")) {
+
+                    StudParser.saveObject(new File( "students.xml" ), listOfStudents);
+                    GroupParser.saveObject(new File( "groups.xml" ), listOfGroups);
                     view.saveChangesAndExit();
-                    WriteXMLFileDOMStudent file = new WriteXMLFileDOMStudent(student);
-                    file.saveSt();
-                    WriteXMLFileDOMGroup file1 = new WriteXMLFileDOMGroup(group);
-                    file1.saveGr();
-                }
-                else if (otv.equals("n")) view.complExit();
+
+                } else if (otv.equals("n")) view.complExit();
                 else view.showError();
                 break;
             }
         }
     }
-
-    public void addStudent(int id,String fio, String gr){
-        student.add(new Student(id, fio, gr));
-    }
-
-    public void addGroup(int id, String name){group.add( new Group(id,name));}
-
 }
